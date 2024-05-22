@@ -4,61 +4,57 @@ include "db_connection.php";
 
   if (isset($_POST['update'])) {
 
-    $firstname = $_POST['firstname'];
+    $first_name = $_POST['first_name'];
 
     $user_id = $_POST['user_id'];
 
-    $lastname = $_POST['lastname'];
+    $last_name = $_POST['last_name'];
 
     $email = $_POST['email'];
 
     $password = $_POST['password'];
 
-    $gender =  $_POST['gender'];
-
-    $sql = "UPDATE `users` SET `first_name` = '$firstname', `last_name` = '$lastname', `email` = '$email', `password` = '$password', 'gender' = '$gender' WHERE 'id' = '$user_id'";
+    $sql = "UPDATE  `users` SET `first_name`='$first_name',`last_name`='$last_name',`email`='$email', `password`='$password' WHERE `user_id`='$user_id'";
 
     $result = $conn->query($sql);
 
     if ($result == TRUE) {
 
       echo "Record updated successfully.";
+      header('location: view.php');
 
     }else{
 
       echo "Error:". $sql . "<br>". $conn->error;
 
     } 
-
   }
 
-if (isset($_GET['id'])) {
+  if (isset($_GET['user_id'])){
+    $user_id = $_GET['user_id'];
 
-$user_id = $_GET['id'];
-    
-$sql = "SELECT * FROM `users` WHERE `id`='$user_id'";
-    
-$result = $conn->query($sql);
-    
-if ($result->num_rows > 0) {
-        
-    while ($row = $result->fetch_assoc()) {
-            
-        $first_name = $row['firstname'];
-            
-        $lastname = $row['lastname'];
-            
-        $email = $row['email'];
-            
-        $password = $row['password'];
+    $sql = "SELECT * FROM `users` WHERE `user_id`='$user_id'";
 
-        $gender = $row['gender'];
-    
-        $id = $row['id']; 
-        
+    $result = $conn->query($sql);
+
+    if($result->num_rows > 0){
+        while ($row = $result->fetch_assoc()){
+            $first_name = $row['first_name'];
+
+            $last_name = $row['last_name'];
+
+            $email = $row['email'];
+
+            $password = $row['password'];
+
+            $user_id = $row['user_id'];
+
+            $level = $row['level'];
+        }
     }
-}
-}
+  }
+
+
 ?>
 
 <!DOCTYPE html>
@@ -67,51 +63,50 @@ if ($result->num_rows > 0) {
 
 <body>
 
-    <h2>User Update Form</h2>
+<h2>Update Form</h2>
 
-    <form action="" method="post">
+<form action="" method="POST">
 
-        <fieldset>
-            
-            <legend>Personal information:</legend>
-            
-            First name:<br>
+  <fieldset>
 
-            <input type="text" name="firstname" value="<?php echo $first_name; ?>">
-            
-            <input type="hidden" name="user_id" value="<?php echo $id; ?>">
+    <legend>Personal information:</legend>
 
-            <br>
+    First name:<br>
 
-            Last name:<br>
+    <input type="text" name="first_name" value="<?php echo $first_name; ?>">
+    <input type="hidden" name="user_id" value="<?php echo $user_id; ?>">
 
-            <input type="text" name="lastname" value="<?php echo $lastname; ?>">
+    <br>
 
-            <br>
+    Last name:<br>
 
-            Email:<br>
+    <input type="text" name="last_name" value="<?php echo $last_name; ?>">
 
-            <input type="email" name="email" value="<?php echo $email; ?>"> 
+    <br>
 
-            <br>
+    Email:<br>
 
-            Password:<br>
+    <input type="email" name="email" value="<?php echo $email; ?>">
 
-            <input type="password" name="password" value="<?php echo $password; ?>"> 
+    <br>
 
-            <br>
+    Password:<br>
 
-            Gender:<br>
+    <input type="password" name="password" value="<?php echo $password; ?>">
 
-            <input type="radio" name="level" value="1" <?php if($level == 1) { echo "checked";} ?> Admin 
-            
-            <input type="radio" name="level" value="2" <?php if($level == 2) { echo "checked";} ?> User 
+    <br>
 
-            <br><br>
+    Level:<br>
 
-            <input type="submit" value="Update" name="update">
-    
-        </fieldset>
+    <input type="radio" name="level" value="1" <?php if($level==1){echo "checked";} ?>> Admin
+
+    <input type="radio" name="level" value="2" <?php if($level==2){echo "checked";} ?>>User
+
+    <br><br>
+
+    <input type="submit" name="update" value="Update"> <input type="button" value="Go to Create Page" onclick="window.location.href = 'create.php';"> <input type="button" value="Go to View Page" onclick="window.location.href = 'view.php';">
+
+  </fieldset>
 
 </form>
 
